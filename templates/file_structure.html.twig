@@ -43,7 +43,7 @@
         }
         console.log('sub', element)
         const ul = document.createElement('ul');
-        ul.classList.add(...["nav", "flex-column", "align-items-center", "ms-3"]);
+        ul.classList.add(...["nav", "flex-column", "align-items-start", "ms-3"]);
         ul.id = `subFolders-${element.id}`;
         document.getElementById(`folder-${element.subFolder.id}`).append(ul);
         return addFolder(element, ul.id);
