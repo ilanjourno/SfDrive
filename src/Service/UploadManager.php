@@ -20,11 +20,9 @@ class UploadManager {
 
     public function upload(UploadedFile $file)
     {
-        $originalFilename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
         $size = $file->getSize();
         $type = $file->getMimeType();
-        $safeFilename = $this->slugger->slug($originalFilename);
-        $fileName = $safeFilename.'-'.uniqid().'.'.$file->guessExtension();
+        $fileName = uniqid().'.'.$file->guessExtension();
         try {
             $file->move($this->getTargetDirectory(), $fileName);
         } catch (FileException $e) {
@@ -37,5 +35,10 @@ class UploadManager {
     public function getTargetDirectory()
     {
         return $this->targetDirectory;
+    }
+
+    public function delete(string $fileName){
+        $path = $this->getTargetDirectory().'/'.$fileName;
+        return unlink($path);
     }
 }

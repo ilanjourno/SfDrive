@@ -1,10 +1,12 @@
 <div class="collapse my-3 show" id="fileStructure">
-    <ul class="nav flex-column align-items-start" id="uploads">
-    </ul>
+    <ul class="nav flex-column align-items-start" id="uploads"></ul>
 </div>
 <script>
     var folders = {{ folders|raw }};
-    const addFolder = (element, id) => {
+    const href = window.location.pathname;
+    const addFolder = (element, id = "uploads") => {
+        const ul = document.getElementById(id);
+        const isOpen = href.includes(`/folder/${element.id}`);
         // Folder parent div
         const li = document.createElement('li');
         li.classList.add(...["nav-item"]);
@@ -12,10 +14,13 @@
         // Clickable folder
         const a = document.createElement('a');
         a.classList.add(...["nav-link", "text-start", "position-relative", "d-flex", "align-items-center"]);
-        a.style.width = "min-content"
+        a.style.width = "max-content"
+        var url = '{{ path("folder_show", {'id': 'id'}) }}'; 
+        url = url.replace("id", element.id);
+        a.href = url
         li.append(a);
         const icon = document.createElement('i');
-        icon.classList.add(...["far", "fa-folder-open", "me-2"]);
+        icon.classList.add(...["far", isOpen ? "fa-folder-open" : "fa-folder", "me-2"]);
         a.append(icon);
         // Element name
         const p = document.createElement('p');
@@ -35,13 +40,14 @@
             document.getElementById(`badge-${element.subFolder.id}`).innerHTML = nbr;
         }
         a.append(span);
-        document.getElementById(id).append(li);
+        ul.append(li);
+        return li;
     }
-    folders.map(element => {
+    folders.map(async element => {
+        const isOpen = href.includes(`/folder/${element.id}`);
         if(!element.subFolder) {
-            return addFolder(element, 'uploads');
+            return  addFolder(element);
         }
-        console.log('sub', element)
         const ul = document.createElement('ul');
         ul.classList.add(...["nav", "flex-column", "align-items-start", "ms-3"]);
         ul.id = `subFolders-${element.id}`;

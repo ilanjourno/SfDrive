@@ -8,31 +8,32 @@
         {% block stylesheets %}
             {{ encore_entry_link_tags('app') }}
         {% endblock %}
-
+        <link rel="stylesheet" type="text/css" href="{{asset('datatables.min.css')}}"/>
         {% block javascripts %}
         {% endblock %}
     </head>
     <body>
         <div class="container-fluid">
-            {# {% include "layouts/menu.html.twig" %} #}
             {{ render(controller('App\\Controller\\MenuController::formAction')) }}  
             {{ render(controller('App\\Controller\\FileStructureController::index')) }}  
-            <div class="row">
-                <div class="col col-lg-6">{% include "layouts/folders.html.twig" %}</div>
-                {% if datatable is defined %}
-                    <div class="col col-lg-6"><div id="datatable">Chargement...</div></div>
-                {% endif %}
-            </div>
+            {% if datatable is defined %}
+                <div id="datatable">Chargement...</div>
+            {% endif %}
         </div>
         {% block body %}{% endblock %}
     </body>
     {{ encore_entry_script_tags('app') }}
     {% if datatable is defined %}
-        <script type="text/javascript" src="{{asset('datatables.min.js?')}}"></script>
+        <script type="text/javascript" src="{{asset('datatables.min.js')}}"></script>
         <script src="{{ asset('bundles/datatables/js/datatables.js') }}"></script>
         <script>
             $(function() {
-                $('#datatable').initDataTables({{ datatable_settings(datatable) }});
+                $('#datatable').initDataTables({{ datatable_settings(datatable) }}, {
+                    responsive: true,
+                    searching: true,
+                    processing: true,
+                    dom: 'ftip'
+                })
             });
         </script>
     {% endif %}

@@ -26,12 +26,6 @@ class FileType extends AbstractType
                 'label' => 'Fichier(s) : <span class="text-danger">*</span>',
                 'label_html' => true,
                 'mapped' => false,
-                'constraints' => [
-                    new FileConstaint([
-                        'maxSize' => '1024k',
-                        'mimeTypesMessage' => 'Please upload a valid type document',
-                    ])
-                ],
             ])
             ->add('subFolder', EntityType::class, [
                 'class' => Folder::class,

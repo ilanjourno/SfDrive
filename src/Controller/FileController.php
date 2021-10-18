@@ -7,6 +7,7 @@ use App\Entity\Folder;
 use App\Form\FileType;
 use App\Form\FolderType;
 use App\Repository\FileRepository;
+use App\Repository\FolderRepository;
 use App\Service\UploadManager;
 use Doctrine\ORM\QueryBuilder;
 use Omines\DataTablesBundle\Adapter\Doctrine\ORMAdapter;
@@ -23,77 +24,16 @@ class FileController extends AbstractController
     private $file;
 
     #[Route('/', name: 'default', methods: ['GET', 'POST'])]
-    public function index(Request $request, FileRepository $fileRepository, DataTableFactory $dataTableFactory, UploadManager $uploadManager): Response
+    public function index(): Response
     {
-        $table = $dataTableFactory->create()
-        ->add('id', TextColumn::class, [
-            'label' => '#'
-        ])
-        ->add('name', TextColumn::class, [
-            'label' => 'Nom'
-        ])
-        ->add('brochureFilename', TextColumn::class, [
-            'render' => function($value, $context){
-                return sprintf("<embed src='/uploads/$value' width='200px'/>");
-            },
-            'label' => 'Aperçu'
-        ])
-        ->createAdapter(ORMAdapter::class, [
-            'entity' => File::class,
-            'query' => function(QueryBuilder $builder) {
-                return $builder
-                ->select('f')
-                ->where('f.subFolder IS NULL')
-                ->from(File::class, 'f');
-            }
-        ])
-        ->handleRequest($request);
-
-        if($table->isCallback()) {
-            return $table->getResponse();
-        }
-
-        return $this->renderForm('file/index.html.twig', [
-            'files' => $fileRepository->findAll(),
-            'datatable' => $table
-        ]);
+        return $this->redirectToRoute('folder_index');
     }
 
-    #[Route('/{id}', name: 'file_show', methods: ['GET', 'POST'])]
-    public function show(Request $request, File $file, DataTableFactory $dataTableFactory): Response
+    #[Route('/{id}', name: 'file_show', methods: ['GET', 'POST'], requirements: ['id' => '\d+'])]
+    public function show(File $file): Response
     {
-        $this->file = $file;
-        $table = $dataTableFactory->create()
-        ->add('id', TextColumn::class, [
-            'label' => '#'
-        ])
-        ->add('name', TextColumn::class, [
-            'label' => 'Nom'
-        ])
-        ->add('brochureFilename', TextColumn::class, [
-            'render' => function($value, $context){
-                return sprintf("<embed src='/uploads/$value' width='200px'/>");
-            },
-            'label' => 'Aperçu'
-        ])
-        ->createAdapter(ORMAdapter::class, [
-            'entity' => File::class,
-            'query' => function(QueryBuilder $builder) {
-                return $builder
-                ->select('f')
-                ->where('f = :f')
-                ->setParameter('f', $this->file)
-                ->from(CustomerFiles::class, 'f');
-            }
-        ])
-        ->handleRequest($request);
-
-        if($table->isCallback()) {
-            return $table->getResponse();
-        }
-
         return $this->render('file/show.html.twig', [
-            'datatable' => $table
+            'file' => $file
         ]);
     }
 
@@ -134,24 +74,27 @@ class FileController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $this->getDoctrine()->getManager()->flush();
 
-            return $this->redirectToRoute('file_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('file_show', [
+                'id' => $file->getId()
+            ]);
         }
 
         return $this->renderForm('file/edit.html.twig', [
             'file' => $file,
-            'form' => $form,
+            'fileForm' => $form,
         ]);
     }
 
     #[Route('/{id}/delete', name: 'file_delete', methods: ['POST'])]
-    public function delete(Request $request, File $file): Response
+    public function delete(Request $request, File $file, UploadManager $uploadManager): Response
     {
         if ($this->isCsrfTokenValid('delete'.$file->getId(), $request->request->get('_token'))) {
+            $uploadManager->delete($file->getBrochureFilename());
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->remove($file);
             $entityManager->flush();
         }
 
-        return $this->redirectToRoute('file_index', [], Response::HTTP_SEE_OTHER);
+        return $this->redirectToRoute('default');
     }
 }

@@ -22,7 +22,9 @@ class MenuController extends AbstractController
 
         return $this->renderForm('layouts/menu.html.twig', [
             'folderForm' => $folderForm,
-            'fileForm' => $fileForm
+            'fileForm' => $fileForm,
+            'memory_used' => round(memory_get_usage() /1048576,2),
+            'memory_limit' => ini_get('memory_limit')
         ]);
     }
 
