@@ -2,6 +2,7 @@
 
 namespace App\Service;
 
+use Error;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\String\Slugger\SluggerInterface;
@@ -20,16 +21,17 @@ class UploadManager {
     public function upload(UploadedFile $file)
     {
         $originalFilename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+        $size = $file->getSize();
+        $type = $file->getMimeType();
         $safeFilename = $this->slugger->slug($originalFilename);
         $fileName = $safeFilename.'-'.uniqid().'.'.$file->guessExtension();
-
         try {
             $file->move($this->getTargetDirectory(), $fileName);
         } catch (FileException $e) {
-            // ... handle exception if something happens during file upload
+            throw new Error("Error upload file");
         }
 
-        return $fileName;
+        return [$fileName, $size, $type];
     }
 
     public function getTargetDirectory()

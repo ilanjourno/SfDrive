@@ -10,12 +10,12 @@
         {% endblock %}
 
         {% block javascripts %}
-            {#{{ encore_entry_script_tags('app') }}#}
         {% endblock %}
     </head>
     <body>
         <div class="container-fluid">
             {% include "layouts/menu.html.twig" %}
+            {{ render(controller('App\\Controller\\FileStructureController::index')) }}  
             <div class="row">
                 <div class="col col-lg-6">{% include "layouts/folders.html.twig" %}</div>
                 <div class="col col-lg-6"><div id="datatable">Chargement...</div></div>
@@ -23,6 +23,7 @@
         </div>
         {% block body %}{% endblock %}
     </body>
+    {{ encore_entry_script_tags('app') }}
     {# <script src="{{ asset('bundles/datatables/js/datatables.js') }}"></script>
     <script>
         $(function() {

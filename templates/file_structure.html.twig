@@ -1,0 +1,22 @@
+<div class="collapse my-3 show" id="fileStructure">
+    <ul class="nav flex-column align-items-start">
+    {% for folder in folders %}
+        <li class="nav-item position-relative">
+            <a href="#" class="nav-link d-flex justify-content-center align-items-center">
+                <i class="far fa-folder-open me-2"></i>
+                <p class="m-0">{{folder.getName}}</p>
+            </a>
+            <span class="badge bg-danger" style="position: absolute;top:0; right: -15px;">{{folder.subFolders|length}}</span>
+        </li>
+        {% for subFolder in folder.subFolders %}
+            <li class="nav-item ms-3 position-relative">
+                <a href="#" class="nav-link d-flex justify-content-center align-items-center">
+                    <i class="fas fa-folder me-2"></i>
+                    <p class="m-0">{{subFolder.getName}}</p>
+                </a>
+                <span class="badge bg-secondary" style="position: absolute;top:0; right: -15px;">{{subFolder.subFolders|length}}</span>
+            </li>
+        {% endfor %}
+    {% endfor %}
+    </ul>
+</div>

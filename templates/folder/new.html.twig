@@ -1,19 +1,19 @@
-<div class="modal fade" id="addFileModal" tabindex="-1" aria-labelledby="addFileModalLabel" aria-hidden="true">
+<div class="modal fade" id="addFolderModal" tabindex="-1" aria-labelledby="addFolderModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="addFileModalLabel">New file</h5>
+        <h5 class="modal-title" id="addFolderModalLabel">New folder</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
-    {{ form_start(fileForm) }}
+    {{ form_start(folderForm) }}
         <div class="modal-body">
-            {{ form_widget(fileForm) }}
+            {{ form_widget(folderForm) }}
         </div>
         <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
             <button type="submit" class="btn btn-primary">Créer</button>
         </div>
-      {{ form_end(fileForm) }}
+      {{ form_end(folderForm) }}
     </div>
   </div>
 </div>

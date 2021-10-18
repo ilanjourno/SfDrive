@@ -19,6 +19,13 @@ class FolderRepository extends ServiceEntityRepository
         parent::__construct($registry, Folder::class);
     }
 
+    public function findNotSubFolder() {
+        return $this->createQueryBuilder('f')
+        ->where('f.subFolder is NULL')
+        ->getQuery()
+        ->getResult();
+    }
+
     // /**
     //  * @return Folder[] Returns an array of Folder objects
     //  */
