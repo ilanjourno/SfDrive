@@ -14,6 +14,7 @@ use Symfony\Component\Validator\Constraints\File as FileConstaint;
 
 class FileType extends AbstractType
 {
+    
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
@@ -34,6 +35,8 @@ class FileType extends AbstractType
             ])
             ->add('subFolder', EntityType::class, [
                 'class' => Folder::class,
+                'placeholder' => 'Aucun dossier',
+                'required' => false,
                 'label' => 'Dans le dossier :'
             ])
         ;

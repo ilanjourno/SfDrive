@@ -7,6 +7,7 @@ use App\Repository\FolderRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Finder\Finder;
+use Symfony\Component\Serializer\SerializerInterface;
 
 class FileStructureController extends AbstractController
 {
@@ -17,13 +18,13 @@ class FileStructureController extends AbstractController
         $this->targetDirectory = $targetDirectory;
     }
 
-    public function index(FolderRepository $folderRepository, FileRepository $fileRepository): Response
+    public function index(FolderRepository $folderRepository, FileRepository $fileRepository, SerializerInterface $serializerInterface): Response
     {
-        $folders = $folderRepository->findNotSubFolder();
+        $folders = $folderRepository->findAll();
         $files = $fileRepository->findAll();
 
         return $this->render('file_structure.html.twig', [
-            'folders' => $folders,
+            'folders' => $serializerInterface->serialize($folders, 'json', ['groups' => ['public']]),
             'files' => $files
         ]);
     }

@@ -7,7 +7,7 @@ use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-
+use Symfony\Component\Serializer\Annotation\Groups;
 /**
  * @ORM\Entity(repositoryClass=FolderRepository::class)
  * @ORM\HasLifecycleCallbacks()
@@ -18,10 +18,12 @@ class Folder
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @Groups("public")
      */
     private $id;
 
     /**
+     * @Groups("public")
      * @ORM\Column(type="string", length=255)
      */
     private $name;
@@ -37,6 +39,7 @@ class Folder
     private $updated_at;
 
     /**
+     * @Groups("public")
      * @ORM\ManyToOne(targetEntity=Folder::class, inversedBy="subFolders")
      */
     private $subFolder;

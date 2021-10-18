@@ -1,6 +1,55 @@
 <div class="collapse my-3 show" id="fileStructure">
-    <ul class="nav flex-column align-items-start">
-    {% for folder in folders %}
+    <ul class="nav flex-column align-items-start" id="uploads">
+    </ul>
+</div>
+<script>
+    var folders = {{ folders|raw }};
+    const addFolder = (element, id) => {
+        // Folder parent div
+        const li = document.createElement('li');
+        li.classList.add(...["nav-item"]);
+        li.id = `folder-${element.id}`;
+        // Clickable folder
+        const a = document.createElement('a');
+        a.classList.add(...["nav-link", "text-start", "position-relative", "d-flex", "align-items-center"]);
+        a.style.width = "min-content"
+        li.append(a);
+        const icon = document.createElement('i');
+        icon.classList.add(...["far", "fa-folder-open", "me-2"]);
+        a.append(icon);
+        // Element name
+        const p = document.createElement('p');
+        p.classList.add("m-0");
+        p.innerHTML = element.name;
+        a.append(p);
+        // SubFolders count badge
+        const span = document.createElement('span');
+        span.classList.add(...["badge", "bg-danger", "position-absolute"]);
+        span.style.top = 0;
+        span.style.right = "-15px";
+        span.innerHTML = 0
+        span.id = `badge-${element.id}`
+        if(element.subFolder) {
+            let nbr = parseInt(document.getElementById(`badge-${element.subFolder.id}`).innerHTML);
+            nbr += 1;
+            document.getElementById(`badge-${element.subFolder.id}`).innerHTML = nbr;
+        }
+        a.append(span);
+        document.getElementById(id).append(li);
+    }
+    folders.map(element => {
+        if(!element.subFolder) {
+            return addFolder(element, 'uploads');
+        }
+        console.log('sub', element)
+        const ul = document.createElement('ul');
+        ul.classList.add(...["nav", "flex-column", "align-items-center", "ms-3"]);
+        ul.id = `subFolders-${element.id}`;
+        document.getElementById(`folder-${element.subFolder.id}`).append(ul);
+        return addFolder(element, ul.id);
+    })
+</script>
+    {# {% for folder in folders %}
         <li class="nav-item position-relative">
             <a href="#" class="nav-link d-flex justify-content-center align-items-center">
                 <i class="far fa-folder-open me-2"></i>
@@ -16,7 +65,4 @@
                 </a>
                 <span class="badge bg-secondary" style="position: absolute;top:0; right: -15px;">{{subFolder.subFolders|length}}</span>
             </li>
-        {% endfor %}
-    {% endfor %}
-    </ul>
-</div>
+        {% endfor %} #}

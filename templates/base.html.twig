@@ -14,20 +14,26 @@
     </head>
     <body>
         <div class="container-fluid">
-            {% include "layouts/menu.html.twig" %}
+            {# {% include "layouts/menu.html.twig" %} #}
+            {{ render(controller('App\\Controller\\MenuController::formAction')) }}  
             {{ render(controller('App\\Controller\\FileStructureController::index')) }}  
             <div class="row">
                 <div class="col col-lg-6">{% include "layouts/folders.html.twig" %}</div>
-                <div class="col col-lg-6"><div id="datatable">Chargement...</div></div>
+                {% if datatable is defined %}
+                    <div class="col col-lg-6"><div id="datatable">Chargement...</div></div>
+                {% endif %}
             </div>
         </div>
         {% block body %}{% endblock %}
     </body>
     {{ encore_entry_script_tags('app') }}
-    {# <script src="{{ asset('bundles/datatables/js/datatables.js') }}"></script>
-    <script>
-        $(function() {
-            $('#datatable').initDataTables({{ datatable_settings(datatable) }});
-        });
-    </script> #}
+    {% if datatable is defined %}
+        <script type="text/javascript" src="{{asset('datatables.min.js?')}}"></script>
+        <script src="{{ asset('bundles/datatables/js/datatables.js') }}"></script>
+        <script>
+            $(function() {
+                $('#datatable').initDataTables({{ datatable_settings(datatable) }});
+            });
+        </script>
+    {% endif %}
 </html>

@@ -20,6 +20,8 @@ class FolderType extends AbstractType
             ])
             ->add('subFolder', EntityType::class, [
                 'class' => Folder::class,
+                'required' => false,
+                'placeholder' => 'Aucun dossier',
                 'label' => 'Dans le dossier :'
             ])
         ;
